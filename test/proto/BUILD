@@ -22,12 +22,12 @@ scala_proto_toolchain(
         "//test/proto:blacklisted_proto",
         "//test/proto:other_blacklisted_proto",
     ],
-    extra_generator_dependencies = [
-        "//test/src/main/scala/scalarules/test/extra_protobuf_generator",
-    ],
-    named_generators = {
-        "jvm_extra_protobuf_generator": "scalarules.test.extra_protobuf_generator.ExtraProtobufGenerator",
-    },
+    # extra_generator_dependencies = [
+    #     "//test/src/main/scala/scalarules/test/extra_protobuf_generator",
+    # ],
+    # named_generators = {
+    #     "jvm_extra_protobuf_generator": "scalarules.test.extra_protobuf_generator.ExtraProtobufGenerator",
+    # },
     visibility = ["//visibility:public"],
     with_flat_package = False,
     with_grpc = True,
@@ -244,4 +244,31 @@ scala_test(
     srcs = ["PackProtosTest.scala"],
     unused_dependency_checker_mode = "off",
     deps = [":pack_protos_lib"],
+)
+
+
+
+proto_library(
+    name = "scalapb",
+    srcs = ["scalapb.proto"],
+    deps = ["@com_google_protobuf//:descriptor_proto"],
+)
+
+scala_library(
+    name = "custom_import_lib",
+    srcs = ["CustomImport.scala"],
+)
+
+proto_library(
+    name = "custom_import_proto",
+    srcs = ["custom_import.proto"],
+    deps = [":scalapb"]
+)
+
+scala_proto_library(
+    name = "test_custom_import",
+    deps = [
+        ":custom_import_proto",
+        ":custom_import_lib"
+    ],
 )
